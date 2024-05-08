@@ -8,5 +8,5 @@ This project aims to develop a mini software with a console by using raspberryPi
 Python <br />
 tkinter <br />
 
-## Lisence
+## License
 [MIT](https://choosealicense.com/licenses/mit/)
