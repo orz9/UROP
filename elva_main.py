@@ -10,7 +10,7 @@ global e_username, e_password
 
 root = Tk() #widgets
 root.title('UROP')
-root.iconbitmap('nuslogo.ico')
+#root.iconbitmap('nuslogo.ico')
 root.geometry("800x500")
 
 def lesson_choice(value, window):
@@ -40,7 +40,7 @@ def check_quiz_answer(user_choice, correct_ans):
 def open_lesson_1_window():
     lesson_1_window = Toplevel()
     lesson_1_window.title('Lesson 1 Kenemetics')
-    lesson_1_window.iconbitmap('nuslogo.ico')
+    #lesson_1_window.iconbitmap('nuslogo.ico')
     lesson_1_window.geometry('800x500')
 
     lesson_1_label1 = Label(lesson_1_window, text='Welcome to Lesson 1 Kinemetics!')
@@ -73,7 +73,7 @@ def open_lesson_1_window():
 def open_lesson_2_window():
     lesson_2_window = Toplevel()
     lesson_2_window.title('Lesson 2 Motion')
-    lesson_2_window.iconbitmap('nuslogo.ico')
+    #lesson_2_window.iconbitmap('nuslogo.ico')
     lesson_2_window.geometry('800x500')
 
     lesson_2_label1 = Label(lesson_2_window, text='Welcome to Lesson 2 Motion!')
@@ -83,7 +83,7 @@ def open_lesson_2_window():
 def open_lesson_3_window():
     lesson_3_window = Toplevel()
     lesson_3_window.title('Lesson 3 Newton\'s Law')
-    lesson_3_window.iconbitmap('nuslogo.ico')
+    #lesson_3_window.iconbitmap('nuslogo.ico')
     lesson_3_window.geometry('800x500')
 
     lesson_3_label1 = Label(lesson_3_window, text='Welcome to Lesson 3 Newton\'s Law!')
@@ -93,7 +93,7 @@ def open_lesson_3_window():
 def open_lesson_4_window():
     lesson_4_window = Toplevel()
     lesson_4_window.title('Lesson 4 Thermodynamics')
-    lesson_4_window.iconbitmap('nuslogo.ico')
+    #lesson_4_window.iconbitmap('nuslogo.ico')
     lesson_4_window.geometry('800x500')
 
     lesson_4_label1 = Label(lesson_4_window, text='Welcome to Lesson 4 Thermodynamics!')
@@ -104,7 +104,7 @@ def open_lesson_4_window():
 def open_menu_window():
     menu_window = Toplevel()
     menu_window.title('Lesson menu')
-    menu_window.iconbitmap('nuslogo.ico')
+    #menu_window.iconbitmap('nuslogo.ico')
     menu_window.geometry('800x500')
 
     menu_label1 = Label(menu_window, text='Please select your lesson')
