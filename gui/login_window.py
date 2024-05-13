@@ -1,53 +1,104 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtGui import QIcon
-from .lesson_menu import LessonMenuWindow
+from gui.lesson_menu import LessonMenuWindow
+from gui.no_user_window import NoUserWindow
+from gui.message_window import showMessage
+from gui.admin_window import AdminWindow
+from mongoDB.db_utils import check_user, add_user
+
 
 class LoginWindow(QWidget):
-    def __init__(self):
+    def __init__(self, userAuthority):
         super().__init__()
+        self.userAuthority = userAuthority
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('Physics is fun')  # Set the window title
-        self.setWindowIcon(QIcon('resources/nuslogo.ico'))  # Set the window icon
+        self.setWindowTitle('Physics is fun')
+        self.setWindowIcon(QIcon('resources/nuslogo.ico'))
 
-        titleLabel = QLabel('Physics learning tool for VI students', self)
+        titleLabel = QLabel('Physics learning tool for VI students')
         titleLabel.setStyleSheet("font-size: 18px; font-weight: bold;")
         
-        projectLabel = QLabel('Project from NUS ECE department', self)
+        projectLabel = QLabel('Project from NUS ECE department')
         
-        nameLabel = QLabel('Name:', self)
-        self.nameEdit = QLineEdit(self)
+        nameLabel = QLabel('Name:')
+        self.nameEdit = QLineEdit()
         
-        passwordLabel = QLabel('Password:', self)
-        self.passwordEdit = QLineEdit(self)
+        passwordLabel = QLabel('Password:')
+        self.passwordEdit = QLineEdit()
         self.passwordEdit.setEchoMode(QLineEdit.Password)
-        
-        loginButton = QPushButton('Login', self)
-        exitButton = QPushButton('Exit', self)
 
-        # Layouts
+        # Initialize layouts
         mainLayout = QVBoxLayout()
         formLayout = QHBoxLayout()
         buttonLayout = QHBoxLayout()
 
-        # Add widgets to form layout
+        # Common buttons
+        loginButton = QPushButton('Login')
+        loginButton.clicked.connect(self.on_login)
+        buttonLayout.addWidget(loginButton)
+
+        exitButton = QPushButton('Exit')
+        exitButton.clicked.connect(self.close)
+        buttonLayout.addWidget(exitButton)
+
+        # Conditional button for registration
+        if self.userAuthority == "student":
+            registerButton = QPushButton('Register')
+            registerButton.clicked.connect(self.on_register)
+            buttonLayout.insertWidget(buttonLayout.count() - 1, registerButton)  # Insert before the exit button
+
         formLayout.addWidget(nameLabel)
         formLayout.addWidget(self.nameEdit)
         formLayout.addWidget(passwordLabel)
         formLayout.addWidget(self.passwordEdit)
 
-        # Add buttons to button layout
-        buttonLayout.addWidget(loginButton)
-        buttonLayout.addWidget(exitButton)
-
-        # Add widgets to main layout
         mainLayout.addWidget(titleLabel)
         mainLayout.addWidget(projectLabel)
         mainLayout.addLayout(formLayout)
         mainLayout.addLayout(buttonLayout)
 
-        # Set main layout on the application window
         self.setLayout(mainLayout)
-        self.setWindowTitle('Physics Learning Tool')
-        self.setGeometry(300, 300, 600, 200)  # Modify as needed for your display
+        self.setGeometry(300, 300, 600, 200)
+
+
+
+    def on_login(self):
+        username = self.nameEdit.text()
+        password = self.passwordEdit.text()
+        user = check_user(username, self.userAuthority)
+        if not username or not password:
+            QMessageBox.critical(self, "Login Error", "Error! Empty username or password!")
+            return
+        else:
+            if user and user.get('password') == password:
+                showMessage("Login successful!")
+                # Proceed to next window
+                self.close()  # Close the login window
+                if self.userAuthority == "student":
+                    self.lesson_menu_window = LessonMenuWindow(username)  # Open the lesson menu with username
+                    self.lesson_menu_window.show()
+                else:
+                    self.admin_window = AdminWindow(username) # Open the admin window with username
+                    self.admin_window.show()
+            elif user:
+                showMessage("Incorrect password, please try again!", QMessageBox.Critical)
+            else:
+                self.no_user_window = NoUserWindow(self.nameEdit.text(), self.passwordEdit.text())
+                self.no_user_window.show()
+
+    def on_register(self):
+        username = self.nameEdit.text()
+        password = self.passwordEdit.text()
+        if not username or not password:
+            QMessageBox.critical(self, "Login Error", "Error! Empty username or password!")
+            return
+        else:
+            if check_user(username, self.userAuthority):
+                showMessage("Existing user, please login!", QMessageBox.Warning)
+            else:
+                add_user(username, password, self.userAuthority)
+                showMessage("Successfully registered!")
+                self.nameEdit.clear()
+                self.passwordEdit.clear()

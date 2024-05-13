@@ -6,7 +6,8 @@ This project aims to develop a mini software with a console by using raspberryPi
 
 ## Requirements
 Python <br />
-tkinter <br />
+PyQt5 <br />
+Pymongo <br />
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
