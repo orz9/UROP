@@ -163,3 +163,6 @@ config.ini
 
 # node_modules
 node_modules/
+
+# elva_main.py
+elva_main.py
