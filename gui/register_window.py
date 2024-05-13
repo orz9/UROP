@@ -7,7 +7,7 @@ class RegisterWindow(QWidget):
         super().__init__()
         self.initUI(username, password)
 
-    def initUI(self, username, password):
+    def initUI(self, username, password, userAuthority):
         self.setWindowTitle("Register")
         
         nameLabel = QLabel('Name:')

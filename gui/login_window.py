@@ -3,11 +3,14 @@ from PyQt5.QtGui import QIcon
 from gui.lesson_menu import LessonMenuWindow
 from gui.no_user_window import NoUserWindow
 from gui.message_window import showMessage
+from gui.admin_window import AdminWindow
 from mongoDB.db_utils import check_user, add_user
 
+
 class LoginWindow(QWidget):
-    def __init__(self):
+    def __init__(self, userAuthority):
         super().__init__()
+        self.userAuthority = userAuthority
         self.initUI()
 
     def initUI(self):
@@ -25,26 +28,31 @@ class LoginWindow(QWidget):
         passwordLabel = QLabel('Password:')
         self.passwordEdit = QLineEdit()
         self.passwordEdit.setEchoMode(QLineEdit.Password)
-        
-        loginButton = QPushButton('Login')
-        loginButton.clicked.connect(self.on_login)
-        registerButton = QPushButton('Register')
-        registerButton.clicked.connect(self.on_register)
-        exitButton = QPushButton('Exit')
-        exitButton.clicked.connect(self.close)
 
+        # Initialize layouts
         mainLayout = QVBoxLayout()
         formLayout = QHBoxLayout()
         buttonLayout = QHBoxLayout()
+
+        # Common buttons
+        loginButton = QPushButton('Login')
+        loginButton.clicked.connect(self.on_login)
+        buttonLayout.addWidget(loginButton)
+
+        exitButton = QPushButton('Exit')
+        exitButton.clicked.connect(self.close)
+        buttonLayout.addWidget(exitButton)
+
+        # Conditional button for registration
+        if self.userAuthority == "student":
+            registerButton = QPushButton('Register')
+            registerButton.clicked.connect(self.on_register)
+            buttonLayout.insertWidget(buttonLayout.count() - 1, registerButton)  # Insert before the exit button
 
         formLayout.addWidget(nameLabel)
         formLayout.addWidget(self.nameEdit)
         formLayout.addWidget(passwordLabel)
         formLayout.addWidget(self.passwordEdit)
-
-        buttonLayout.addWidget(loginButton)
-        buttonLayout.addWidget(registerButton)
-        buttonLayout.addWidget(exitButton)
 
         mainLayout.addWidget(titleLabel)
         mainLayout.addWidget(projectLabel)
@@ -54,10 +62,12 @@ class LoginWindow(QWidget):
         self.setLayout(mainLayout)
         self.setGeometry(300, 300, 600, 200)
 
+
+
     def on_login(self):
         username = self.nameEdit.text()
         password = self.passwordEdit.text()
-        user = check_user(username)
+        user = check_user(username, self.userAuthority)
         if not username or not password:
             QMessageBox.critical(self, "Login Error", "Error! Empty username or password!")
             return
@@ -66,8 +76,12 @@ class LoginWindow(QWidget):
                 showMessage("Login successful!")
                 # Proceed to next window
                 self.close()  # Close the login window
-                self.lesson_menu_window = LessonMenuWindow(username)  # Open the lesson menu with username
-                self.lesson_menu_window.show()
+                if self.userAuthority == "student":
+                    self.lesson_menu_window = LessonMenuWindow(username)  # Open the lesson menu with username
+                    self.lesson_menu_window.show()
+                else:
+                    self.admin_window = AdminWindow(username) # Open the admin window with username
+                    self.admin_window.show()
             elif user:
                 showMessage("Incorrect password, please try again!", QMessageBox.Critical)
             else:
@@ -81,10 +95,10 @@ class LoginWindow(QWidget):
             QMessageBox.critical(self, "Login Error", "Error! Empty username or password!")
             return
         else:
-            if check_user(username):
+            if check_user(username, self.userAuthority):
                 showMessage("Existing user, please login!", QMessageBox.Warning)
             else:
-                add_user(username, password)
+                add_user(username, password, self.userAuthority)
                 showMessage("Successfully registered!")
                 self.nameEdit.clear()
                 self.passwordEdit.clear()

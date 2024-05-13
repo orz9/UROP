@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QApplication
-from gui.login_window import *
+from gui.user_window import UserWindow
 
 if __name__ == '__main__':
     app = QApplication([])
-    window = LoginWindow()
+    window = UserWindow()
     window.show()
     app.exec_()
