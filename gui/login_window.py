@@ -72,21 +72,45 @@ class LoginWindow(QWidget):
             QMessageBox.critical(self, "Login Error", "Error! Empty username or password!")
             return
         else:
-            if user and user.get('password') == password:
-                showMessage("Login successful!")
-                # Proceed to next window
-                self.close()  # Close the login window
-                if self.userAuthority == "student":
-                    self.lesson_menu_window = LessonMenuWindow(username)  # Open the lesson menu with username
+            if self.userAuthority == "student":
+                if user and user.get('password') == password:
+                    showMessage("Login successful!")
+                    # Proceed to lesson menu window
+                    self.close()
+                    self.lesson_menu_window = LessonMenuWindow(username) # Open the lesson menu with username
                     self.lesson_menu_window.show()
+                elif user:
+                    showMessage("Incorrect password, please try again!", QMessageBox.Critical)
                 else:
-                    self.admin_window = AdminWindow(username) # Open the admin window with username
+                    self.no_user_window = NoUserWindow(self.nameEdit.text(), self.passwordEdit.text())
+                    self.no_user_window.show()
+            elif self.userAuthority == "teacher":
+                if user and user.get('password') == password:
+                    showMessage("Login successfull!")
+                    # Proceed to admin window
+                    self.close()
+                    self.admin_window = AdminWindow(username)
                     self.admin_window.show()
-            elif user:
-                showMessage("Incorrect password, please try again!", QMessageBox.Critical)
-            else:
-                self.no_user_window = NoUserWindow(self.nameEdit.text(), self.passwordEdit.text())
-                self.no_user_window.show()
+                elif user:
+                    showMessage("Incorrect password, please try again!", QMessageBox.Critical)
+                else:
+                    showMessage("Unauthorized!", QMessageBox.Critical)
+                    
+            # if user and user.get('password') == password:
+            #     showMessage("Login successful!")
+            #     # Proceed to next window
+            #     self.close()  # Close the login window
+            #     if self.userAuthority == "student":
+            #         self.lesson_menu_window = LessonMenuWindow(username)  # Open the lesson menu with username
+            #         self.lesson_menu_window.show()
+            #     else:
+            #         self.admin_window = AdminWindow(username) # Open the admin window with username
+            #         self.admin_window.show()
+            # elif user:
+            #     showMessage("Incorrect password, please try again!", QMessageBox.Critical)
+            # else:
+            #     self.no_user_window = NoUserWindow(self.nameEdit.text(), self.passwordEdit.text())
+            #     self.no_user_window.show()
 
     def on_register(self):
         username = self.nameEdit.text()
@@ -95,10 +119,10 @@ class LoginWindow(QWidget):
             QMessageBox.critical(self, "Login Error", "Error! Empty username or password!")
             return
         else:
-            if check_user(username, self.userAuthority):
+            if check_user(username, "student"): # Hardcoded because the program does not allow for admin registration
                 showMessage("Existing user, please login!", QMessageBox.Warning)
             else:
-                add_user(username, password, self.userAuthority)
+                add_user(username, password, "student")
                 showMessage("Successfully registered!")
                 self.nameEdit.clear()
                 self.passwordEdit.clear()

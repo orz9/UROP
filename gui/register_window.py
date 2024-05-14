@@ -7,7 +7,7 @@ class RegisterWindow(QWidget):
         super().__init__()
         self.initUI(username, password)
 
-    def initUI(self, username, password, userAuthority):
+    def initUI(self, username, password):
         self.setWindowTitle("Register")
         
         nameLabel = QLabel('Name:')
@@ -33,6 +33,6 @@ class RegisterWindow(QWidget):
     def on_register(self):
         username = self.nameEdit.text()
         password = self.passwordEdit.text()
-        add_user(username, password)
+        add_user(username, password, "student")
         showMessage("Successfully registered!")
         self.close()
