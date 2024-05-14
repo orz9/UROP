@@ -5,7 +5,6 @@ from gui.login_window import LoginWindow
 class UserWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.userAuthority = "student"  # Default to student
         self.initUI()
 
     def initUI(self):
