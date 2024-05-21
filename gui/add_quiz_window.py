@@ -1,4 +1,3 @@
-# add_quiz_window.py
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMessageBox
 from mongoDB.db_utils import add_quiz
 from PyQt5.QtCore import pyqtSignal
@@ -6,9 +5,10 @@ from PyQt5.QtCore import pyqtSignal
 class AddQuizWindow(QWidget):
     quiz_saved = pyqtSignal(int, str)
 
-    def __init__(self, nOfQuestion):
+    def __init__(self, nOfQuestion, topic):
         super().__init__()
         self.nOfQuestion = nOfQuestion
+        self.topic = topic
         self.setWindowTitle("Add Quiz")
         self.initUI()
 
@@ -57,7 +57,7 @@ class AddQuizWindow(QWidget):
             QMessageBox.warning(self, "Incomplete Data", "Please fill in all fields.")
             return
         
-        quiz_id = add_quiz(question, option1, option2, option3, answer)
+        quiz_id = add_quiz(self.topic, question, option1, option2, option3, answer)
         QMessageBox.information(self, "Quiz Saved", f"Quiz question saved successfully with ID: {quiz_id}")
         
         self.nOfQuestion += 1

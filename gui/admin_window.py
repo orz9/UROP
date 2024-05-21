@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from gui.add_lesson_window import AddLessonWindow
+from gui.delete_lesson_window import DeleteLessonWindow
 
 class AdminWindow(QWidget):
     def __init__(self, username):
@@ -38,10 +39,9 @@ class AdminWindow(QWidget):
         self.setGeometry(300, 300, 400, 300)  # Adjust size as needed
 
     def add_lesson(self):
-        # Placeholder function
         print("Opening add lesson window")
-        self.lesson_window = AddLessonWindow()
-        self.lesson_window.show()
+        self.add_lesson_window = AddLessonWindow()
+        self.add_lesson_window.show()
 
     def modify_lesson(self):
         # Placeholder function
@@ -49,7 +49,9 @@ class AdminWindow(QWidget):
 
     def delete_lesson(self):
         # Placeholder function
-        print("Deleting a lesson...")
+        print("Opening delete lesson window")
+        self.delete_lesson_window = DeleteLessonWindow()
+        self.delete_lesson_window.show()
 
     def check_performance(self):
         # Placeholder function

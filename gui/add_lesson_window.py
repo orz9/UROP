@@ -1,7 +1,6 @@
-# add_lesson_window.py
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
 from gui.add_quiz_window import AddQuizWindow
-from mongoDB.db_utils import add_lesson
+from mongoDB.db_utils import add_lesson, check_lesson
 
 class AddLessonWindow(QWidget):
     def __init__(self):
@@ -39,7 +38,7 @@ class AddLessonWindow(QWidget):
 
 
     def openAddQuiz(self):
-        self.quiz_window = AddQuizWindow(self.nOfQuestion)
+        self.quiz_window = AddQuizWindow(self.nOfQuestion, self.lessonNameEdit.text())
         self.quiz_window.quiz_saved.connect(self.updateQuizCount)  # Connect to the signal
         self.quiz_window.show()
 
@@ -51,7 +50,14 @@ class AddLessonWindow(QWidget):
     def saveLesson(self):
         lessonName = self.lessonNameEdit.text()
         lessonContent = self.lessonContentEdit.text()
-        lesson_id = add_lesson(lessonName, lessonContent)
-        QMessageBox.information(self, "Quiz Saved", f"Quiz question saved successfully with ID: {lesson_id}")
+        if not lessonName or not lessonContent:
+            QMessageBox.warning(self, "Incomplete Data", "Please enter both lesson name and content.")
+            return
 
-# Assume MongoDB connection setup and saving functions are in another file or included at the top
+        if check_lesson(lessonName):
+            QMessageBox.warning(self, "Duplicate Lesson", f"A lesson with the name '{lessonName}' already exists.")
+            return
+
+        lesson_id = add_lesson(lessonName, lessonContent)
+        QMessageBox.information(self, "Lesson Saved", f"New lesson {lessonName} saved successfully with ID: {lesson_id}")
+        self.close()
