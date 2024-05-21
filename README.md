@@ -18,6 +18,7 @@ cd UROP
 pip install -r requirements.txt
 
 python main.py
+```
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
