@@ -47,6 +47,13 @@ def get_lessons():
     lessons = db['lesson-data'].find({}, {'_id': 0, 'topic': 1})
     return list(lessons)
 
+def get_lesson_content(topic):
+    """Fetch the content of a lesson based on the topic."""
+    lesson = db['lesson-data'].find_one({'topic': topic}, {'_id': 0, 'content': 1})
+    if lesson:
+        return lesson.get('content', 'No content available.')
+    return 'No lesson found for the selected topic.'
+
 def delete_lesson(topic):
     db['lesson-data'].delete_one({'topic': topic})
     db['quiz-data'].delete_many({'topic': topic})
