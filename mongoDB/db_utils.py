@@ -54,6 +54,38 @@ def get_lesson_content(topic):
         return lesson.get('content', 'No content available.')
     return 'No lesson found for the selected topic.'
 
+def get_quiz_questions(topic):
+    return list(db['quiz-data'].find({'topic': topic}, {'_id': 0}))
+
+def update_student_performance(username, lesson, score, total):
+    student_performance = db['student-performance']
+    score_entry = f"{score}/{total}"
+
+    # Create a new document if it does not exist
+    update_result = student_performance.update_one(
+        {'student_name': username},
+        {
+            '$push': {f'lessons.{lesson}': score_entry}
+        },
+        upsert=True  # This option creates a new document if no document matches the query
+    )
+
+    # Check if the operation was successful or if a new document was created
+    if update_result.upserted_id is not None:
+        print("Created a new student performance record.")
+    elif update_result.modified_count == 0:
+        # If the document exists but the lesson does not, initialize it
+        update_result = student_performance.update_one(
+            {'student_name': username, f'lessons.{lesson}': {'$exists': False}},
+            {'$set': {f'lessons.{lesson}': [score_entry]}}
+        )
+        if update_result.modified_count == 0:
+            print("Failed to initialize a new lesson for an existing student.")
+        else:
+            print("Initialized a new lesson for an existing student.")
+    else:
+        print("Updated an existing lesson record for the student.")
+
 def delete_lesson(topic):
     db['lesson-data'].delete_one({'topic': topic})
     db['quiz-data'].delete_many({'topic': topic})

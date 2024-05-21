@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
 from mongoDB.db_utils import get_lesson_content
+from gui.quiz_window import QuizWindow
 
 class LessonWindow(QWidget):
     def __init__(self, lessonChosen, username):
@@ -36,7 +37,7 @@ class LessonWindow(QWidget):
         # Connect buttons
         playAgainButton.clicked.connect(self.playAgain)
         quizButton.clicked.connect(self.startQuiz)
-        backButton.clicked.connect(self.backButton)
+        backButton.clicked.connect(self.go_back)
 
         self.setLayout(layout)
 
@@ -45,10 +46,12 @@ class LessonWindow(QWidget):
         QMessageBox.information(self, "Play Again", "Replaying the lesson.")
 
     def startQuiz(self):
-        # Placeholder for starting a quiz
-        QMessageBox.information(self, "Quiz", "Starting the quiz...")
+        print("Starting the quiz...")
+        self.close()
+        self.quiz_window = QuizWindow(self.username, self.lessonChosen)
+        self.quiz_window.show()
 
-    def backButton(self):
+    def go_back(self):
         self.close()
         from gui.lesson_menu import LessonMenuWindow
         self.lesson_menu_window = LessonMenuWindow(self.username) # Modify this later so that it becomes dynamic
