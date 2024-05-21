@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
+from gui.add_lesson_window import AddLessonWindow
 
 class AdminWindow(QWidget):
     def __init__(self, username):
@@ -38,7 +39,9 @@ class AdminWindow(QWidget):
 
     def add_lesson(self):
         # Placeholder function
-        print("Adding a lesson...")
+        print("Opening add lesson window")
+        self.lesson_window = AddLessonWindow()
+        self.lesson_window.show()
 
     def modify_lesson(self):
         # Placeholder function
