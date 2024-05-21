@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QRadioButton, QButtonGroup
 from mongoDB.db_utils import get_lessons
+from gui.lesson_window import LessonWindow
 
 class LessonMenuWindow(QWidget):
     def __init__(self, username):
@@ -39,5 +40,8 @@ class LessonMenuWindow(QWidget):
         selectedButton = self.buttonGroup.checkedButton()
         if selectedButton:
             print(f"Selected: {selectedButton.text()}")
+            self.close()
+            self.lessoon_window = LessonWindow(selectedButton.text(), self.username)
+            self.lessoon_window.show()
         else:
             print("No selection made.")
